@@ -1157,13 +1157,16 @@
     }  
 
     // دالة رفع الصورة الشخصية سحابياً باستخدام Firebase Storage و Firestore
-    async function uploadFirebaseProfilePicture(event) {  
+        async function uploadFirebaseProfilePicture(event) {  
         const file = event.target.files[0];  
         if (!file) return;  
 
-        try {  
-            alert("جاري رفع الصورة الشخصية إلى السيرفر السحابي (Firebase)... يرجى الانتظار ⏳");  
-            
+        // استبدلنا الـ alert المزعجة بتغيير نص مؤقت أو رسالة خفيفة عشان الموبايل ميحصلوش Block
+        const profileBox = document.getElementById('profile-avatar-box');
+        const originalContent = profileBox.innerHTML;
+        profileBox.innerHTML = `<span class="text-xs font-bold animate-pulse">جاري الرفع...</span>`;
+
+        try {            
             // تخزين الصورة في Firebase Storage
             const storageRef = window.storageMethods.ref(window.storage, `profile_images/${currentUser}_${Date.now()}`);  
             const snapshot = await window.storageMethods.uploadBytes(storageRef, file);  
@@ -1180,13 +1183,13 @@
             document.getElementById('profile-avatar-box').innerHTML = imgHtml;  
             document.getElementById('header-avatar-container').innerHTML = imgHtml;  
 
-            alert("✨ تم رفع وحفظ الصورة الشخصية على سيرفر سحابة Firebase بنجاح تام!");  
-
         } catch (error) {  
             console.error("خطأ أثناء رفع الصورة السحابية: ", error);  
+            profileBox.innerHTML = originalContent;
             alert("حدث خطأ أثناء رفع الصورة للسيرفر، تأكد من اتصال الإنترنت.");  
         }  
     }  
+
 
     async function saveProfileChanges() {  
         const newName = document.getElementById('edit-username').value.trim();  
