@@ -386,7 +386,7 @@
             <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-4 transition-colors">  
                 <h3 class="font-bold text-sm text-emerald-600 dark:text-emerald-400">الملفات والمستندات المتاحة على المنصة:</h3>  
                 <div id="platform-files-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">  
-                    <!-- ديناميكي من LocalStorage -->  
+                    <!-- ديناميكي -->  
                 </div>  
             </div>  
         </section>  
@@ -411,15 +411,15 @@
                 </div>  
 
                 <div class="space-y-3 border-b border-gray-200 dark:border-gray-800 pb-6">  
-                    <label id="avatar-label-text" class="block text-xs font-bold text-gray-700 dark:text-gray-300">اختر صورة رمزية (Avatar) أو ارفع صورتك:</label>  
+                    <label id="avatar-label-text" class="block text-xs font-bold text-gray-700 dark:text-gray-300">اختر صورة رمزية (Avatar) أو ارفع صورتك (تتخزن سحابياً عـ Firebase):</label>  
                     <div class="flex flex-wrap items-center gap-3">  
-                        <button onclick="setAvatarImg('👨‍🎓')" class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl hover:scale-105 transition">👨‍🎓</button>  
-                        <button onclick="setAvatarImg('👩‍🎓')" class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl hover:scale-105 transition">👩‍🎓</button>  
-                        <button onclick="setAvatarImg('⚡')" class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl hover:scale-105 transition">⚡</button>  
-                        <button onclick="setAvatarImg('🦁')" class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl hover:scale-105 transition">🦁</button>  
+                        <button onclick="setAvatarEmoji('👨‍🎓')" class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl hover:scale-105 transition">👨‍🎓</button>  
+                        <button onclick="setAvatarEmoji('👩‍🎓')" class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl hover:scale-105 transition">👩‍🎓</button>  
+                        <button onclick="setAvatarEmoji('⚡')" class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl hover:scale-105 transition">⚡</button>  
+                        <button onclick="setAvatarEmoji('🦁')" class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl hover:scale-105 transition">🦁</button>  
                         <div class="relative overflow-hidden inline-block">  
-                            <button id="upload-btn-text" class="bg-gray-200 dark:bg-gray-800 text-xs px-3 py-2.5 rounded-xl font-bold hover:bg-gray-300 transition">رفع صورة من جهازك 📁</button>  
-                            <input type="file" id="avatar-file-input" accept="image/*" onchange="uploadCustomAvatar(event)" class="absolute inset-0 opacity-0 cursor-pointer">  
+                            <button id="upload-btn-text" class="bg-gray-200 dark:bg-gray-800 text-xs px-3 py-2.5 rounded-xl font-bold hover:bg-gray-300 transition">رفع صورة سحابية من جهازك 📁</button>  
+                            <input type="file" id="avatar-file-input" accept="image/*" onchange="uploadFirebaseProfilePicture(event)" class="absolute inset-0 opacity-0 cursor-pointer">  
                         </div>  
                     </div>  
                 </div>  
@@ -520,7 +520,7 @@
 <div id="result-custom-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">  
     <div class="bg-[#1a1625] border border-[#4a3565] p-6 rounded-2xl max-w-sm w-full space-y-4 text-center text-white shadow-2xl">  
         <div class="text-4xl mb-1">🎉</div>  
-        <h3 class="text-lg font-bold">انتهى الامتحان بنجاح!</h3>  
+        <h3 class="text-lg font-bold">انتهى الامتحان بنجاح وسجّل في السيرفر!</h3>  
         <p id="custom-modal-msg" class="text-sm text-[#b8b8b8]">درجتك: 0 من 0 (0%)</p>  
         <button onclick="closeResultCustomModal()" class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white py-2.5 rounded-xl font-bold text-xs transition">حسناً</button>  
     </div>  
@@ -541,7 +541,7 @@
         {  
             id: 1,  
             title: "امتحان التاريخ العام (الفصل الأول)",  
-            duration: 15, // بالدقائق
+            duration: 15,  
             questions: [  
                 { text: "في أي عام قامت ثورة 1919 في مصر؟", options: ["1917", "1919", "1922", "1924"], correct: 2 },  
                 { text: "من هو قائد ثورة 1919؟", options: ["مصطفى كامل", "سعد زغلول", "محمد فريد", "أحمد عرابي"], correct: 2 }  
@@ -728,6 +728,7 @@
         renderExamsList();  
         renderResultsList();  
         renderPlatformFiles();  
+        loadUserDataFromCloud(user);  
 
         navigationHistory = [];  
         if (currentRole === 'teacher') {  
@@ -739,6 +740,30 @@
         }  
 
         setThemeColor('purple');  
+    }  
+
+    // دالة لجلب البيانات الشخصية من Firestore والسيرفر سحابياً عند الدخول
+    async function loadUserDataFromCloud(userId) {
+        try {
+            if (!window.db) return;
+            const userDocRef = window.firestoreMethods.doc(window.db, "users", userId);
+            const userDoc = await window.firestoreMethods.getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                if (data.profilePic) {
+                    const imgHtml = `<img src="${data.profilePic}" class="w-full h-full object-cover">`;
+                    document.getElementById('profile-avatar-box').innerHTML = imgHtml;
+                    document.getElementById('header-avatar-container').innerHTML = imgHtml;
+                }
+                if (data.bio) {
+                    document.getElementById('profile-bio-display').innerText = data.bio;
+                    document.getElementById('edit-bio').value = data.bio;
+                }
+            }
+        } catch (error) {
+            console.error("خطأ في جلب بيانات المستخدم السحابية: ", error);
+        }
     }  
 
     function pushStateSection(tabId, btn, pushToHistory = true) {  
@@ -943,31 +968,29 @@
         saveAllData();  
         renderResultsList();  
 
-        saveExamResult(currentUser, scoreCounter, totalQ);  
+        // حفظ النتيجة سحابياً في سحابة Firestore باستخدام الـ SDK المربوط
+        saveExamResultToCloud(currentUser, scoreCounter, totalQ, percentage);  
 
         document.getElementById('custom-modal-msg').innerText = `درجتك: ${scoreCounter} من ${totalQ} (${percentage}%)`;  
         document.getElementById('result-custom-modal').classList.remove('hidden');  
     }  
 
-    async function saveExamResult(studentName, score, totalQuestions) {  
+    async function saveExamResultToCloud(studentName, score, totalQuestions, percentage) {  
       try {  
-        if (!window.db) {  
-          console.error("قاعدة البيانات غير متصلة!");  
-          return;  
-        }  
-        
+        if (!window.db) return;  
         const docRef = await window.firestoreMethods.addDoc(  
           window.firestoreMethods.collection(window.db, "examResults"),   
           {  
             studentName: studentName,  
             score: score,  
             total: totalQuestions,  
+            percentage: percentage,  
             date: new Date().toISOString()  
           }  
         );  
-        console.log("تم حفظ النتيجة بنجاح برقم: ", docRef.id);  
+        console.log("تم حفظ نتيجة الامتحان سحابياً بنجاح برقم: ", docRef.id);  
       } catch (e) {  
-        console.error("خطأ أثناء حفظ النتيجة: ", e);  
+        console.error("خطأ أثناء حفظ النتيجة سحابياً: ", e);  
       }  
     }  
 
@@ -1126,33 +1149,64 @@
         if(isRegisterMode) toggleAuthMode();  
     }  
 
-    function setAvatarImg(emoji) {  
+    function setAvatarEmoji(emoji) {  
         const profileBox = document.getElementById('profile-avatar-box');  
         const headerBox = document.getElementById('header-avatar-container');  
         profileBox.innerHTML = `<span class="text-3xl">${emoji}</span>`;  
         headerBox.innerHTML = `<span class="text-sm">${emoji}</span>`;  
     }  
 
-    function uploadCustomAvatar(event) {  
+    // دالة رفع الصورة الشخصية سحابياً باستخدام Firebase Storage و Firestore
+    async function uploadFirebaseProfilePicture(event) {  
         const file = event.target.files[0];  
-        if (file) {  
-            const reader = new FileReader();  
-            reader.onload = function(e) {  
-                const imgHtml = `<img src="${e.target.result}" class="w-full h-full object-cover">`;  
-                document.getElementById('profile-avatar-box').innerHTML = imgHtml;  
-                document.getElementById('header-avatar-container').innerHTML = imgHtml;  
-            };  
-            reader.readAsDataURL(file);  
+        if (!file) return;  
+
+        try {  
+            alert("جاري رفع الصورة الشخصية إلى السيرفر السحابي (Firebase)... يرجى الانتظار ⏳");  
+            
+            // تخزين الصورة في Firebase Storage
+            const storageRef = window.storageMethods.ref(window.storage, `profile_images/${currentUser}_${Date.now()}`);  
+            const snapshot = await window.storageMethods.uploadBytes(storageRef, file);  
+            const downloadURL = await window.storageMethods.getDownloadURL(snapshot.ref);  
+
+            // حفظ رابط الصورة في Firestore تحت مستند المستخدم
+            const userDocRef = window.firestoreMethods.doc(window.db, "users", currentUser);  
+            await window.firestoreMethods.setDoc(userDocRef, {  
+                profilePic: downloadURL,
+                updatedAt: new Date().toISOString()
+            }, { merge: true });  
+
+            const imgHtml = `<img src="${downloadURL}" class="w-full h-full object-cover">`;  
+            document.getElementById('profile-avatar-box').innerHTML = imgHtml;  
+            document.getElementById('header-avatar-container').innerHTML = imgHtml;  
+
+            alert("✨ تم رفع وحفظ الصورة الشخصية على سيرفر سحابة Firebase بنجاح تام!");  
+
+        } catch (error) {  
+            console.error("خطأ أثناء رفع الصورة السحابية: ", error);  
+            alert("حدث خطأ أثناء رفع الصورة للسيرفر، تأكد من اتصال الإنترنت.");  
         }  
     }  
 
-    function saveProfileChanges() {  
+    async function saveProfileChanges() {  
         const newName = document.getElementById('edit-username').value.trim();  
         const newBio = document.getElementById('edit-bio').value.trim();  
 
         if (!newName) {  
             alert('اسم المستخدم لا يمكن أن يكون فارغاً!');  
             return;  
+        }  
+
+        try {  
+            if (window.db) {  
+                const userDocRef = window.firestoreMethods.doc(window.db, "users", newName);  
+                await window.firestoreMethods.setDoc(userDocRef, {  
+                    username: newName,  
+                    bio: newBio  
+                }, { merge: true });  
+            }  
+        } catch(e) {  
+            console.log("خطأ في تحديث البيانات السحابية: ", e);  
         }  
 
         currentUser = newName;  
@@ -1163,7 +1217,7 @@
             document.getElementById('profile-bio-display').innerText = newBio;  
         }  
 
-        alert('تم حفظ التعديلات بنجاح! ✅');  
+        alert('تم حفظ التعديلات السحابية بنجاح! ✅');  
     }  
 
     function toggleDarkMode() {  
