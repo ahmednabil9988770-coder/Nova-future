@@ -34,6 +34,33 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-aut
 const auth = getAuth(app);
 const storage = getStorage(app);
 const analytics = getAnalytics(app);
+        window.db = db;
+window.auth = auth;
+window.storage = storage:
+        window.firestoreMethods = {
+    collection,
+    addDoc,
+    getDocs,
+    doc,
+    setDoc,
+    getDoc,
+    updateDoc,
+    deleteDoc,
+    query,
+    orderBy,
+    serverTimestamp
+};
+        window.authMethods = {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+};
+       window.storageMethods = {
+    ref,
+    uploadBytes,
+    getDownloadURL
+}; 
 </script>
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
