@@ -769,7 +769,11 @@
         pushStateSection('exam-active-room', null, true);  
         document.getElementById('active-exam-title').innerText = currentActiveExam.title;  
         loadExamQuestion();  
-        startExamTimer(300);  
+          
+        // تشغيل مؤقت الامتحان لمدة 15 دقيقة (يمكنك تغييرها كما تحب)
+        startExamTimer(15, function() {  
+            finishActiveExam();  
+        });  
     }  
 
     function loadExamQuestion() {  
@@ -815,18 +819,29 @@
         loadExamQuestion();  
     }  
 
-    function startExamTimer(durationSeconds) {  
-        let timer = durationSeconds;  
+    // دالة مؤقت الامتحان المحدثة
+    function startExamTimer(durationInMinutes, onTimeUp) {  
+        let timer = durationInMinutes * 60;  
         clearInterval(timerInterval);  
-        timerInterval = setInterval(() => {  
-            let minutes = Math.floor(timer / 60);  
-            let seconds = timer % 60;  
-            document.getElementById('exam-timer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;  
-              
+          
+        timerInterval = setInterval(function () {  
+            let minutes = parseInt(timer / 60, 10);  
+            let seconds = parseInt(timer % 60, 10);  
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;  
+            seconds = seconds < 10 ? "0" + seconds : seconds;  
+
+            const timerElement = document.getElementById('exam-timer');  
+            if (timerElement) {  
+                timerElement.innerText = minutes + ":" + seconds;  
+            }  
+
             if (--timer < 0) {  
                 clearInterval(timerInterval);  
-                alert('انتهى الوقت المخصص للامتحان!');  
-                finishActiveExam();  
+                alert("انتهى وقت الامتحان!");  
+                if (typeof onTimeUp === "function") {  
+                    onTimeUp();  
+                }  
             }  
         }, 1000);  
     }  
@@ -843,29 +858,54 @@
         const totalQ = currentActiveExam.questions.length;  
         const percentage = Math.round((scoreCounter / totalQ) * 100);  
         
-        // شروط الألوان المخصصة التي طلبتها:
-        let gradeText = '';
-        if (percentage < 50) {
-            gradeText = 'يحتاج تحسين ⚠️';
-        } else if (percentage >= 50 && percentage <= 70) {
-            gradeText = 'مقبول متوسط 🟡';
-        } else {
-            gradeText = 'ممتاز ⭐';
-        }
+        let gradeText = '';  
+        if (percentage < 50) {  
+            gradeText = 'يحتاج تحسين ⚠️';  
+        } else if (percentage >= 50 && percentage <= 70) {  
+            gradeText = 'مقبول متوسط 🟡';  
+        } else {  
+            gradeText = 'ممتاز ⭐';  
+        }  
 
         const resultEntry = {  
             examTitle: currentActiveExam.title,  
             score: `${scoreCounter} / ${totalQ} (${percentage}% - ${gradeText})`,  
-            date: new Date().toISOString().split('T')[0],
-            percentage: percentage
+            date: new Date().toISOString().split('T')[0],  
+            percentage: percentage  
         };  
 
         studentResults.unshift(resultEntry);  
         saveAllData();  
         renderResultsList();  
 
+        // حفظ النتيجة أونلاين في قاعدة بيانات فايربيس تلقائياً
+        saveExamResult(currentUser, scoreCounter, totalQ);  
+
         document.getElementById('custom-modal-msg').innerText = `درجتك: ${scoreCounter} من ${totalQ} (${percentage}%)`;  
         document.getElementById('result-custom-modal').classList.remove('hidden');  
+    }  
+
+    // دالة حفظ النتيجة في فايربيس (Firestore)
+    async function saveExamResult(studentName, score, totalQuestions) {  
+      try {  
+        if (!window.db) {  
+          console.error("قاعدة البيانات غير متصلة!");  
+          return;  
+        }  
+        
+        const docRef = await window.firestoreMethods.addDoc(  
+          window.firestoreMethods.collection(window.db, "examResults"),   
+          {  
+            studentName: studentName,  
+            score: score,  
+            total: totalQuestions,  
+            date: new Date().toISOString()  
+          }  
+        );  
+        console.log("تم حفظ النتيجة بنجاح برقم: ", docRef.id);  
+      } catch (e) {  
+        console.error("خطأ أثناء حفظ النتيجة: ", e);  
+      }  
     }  
 
     function closeResultCustomModal() {  
@@ -877,13 +917,12 @@
         const container = document.getElementById('results-list-container');  
         container.innerHTML = '';  
         studentResults.forEach(res => {  
-            // تحديد اللون ديناميكياً بناءً على النسبة المحفوظة
-            let colorClass = 'text-green-600 dark:text-green-400';
-            if (res.percentage < 50) {
-                colorClass = 'text-red-600 dark:text-red-400';
-            } else if (res.percentage >= 50 && res.percentage <= 70) {
-                colorClass = 'text-amber-500 dark:text-amber-400';
-            }
+            let colorClass = 'text-green-600 dark:text-green-400';  
+            if (res.percentage < 50) {  
+                colorClass = 'text-red-600 dark:text-red-400';  
+            } else if (res.percentage >= 50 && res.percentage <= 70) {  
+                colorClass = 'text-amber-500 dark:text-amber-400';  
+            }  
 
             container.innerHTML += `  
                 <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-3">  
@@ -1096,7 +1135,8 @@
             html.setAttribute('lang', 'ar');  
         }  
     }  
-</script>
+</script>  
+
 <script type="module">
   // استيراد حزم فايربيس (التحليلات وقاعدة البيانات Firestore)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
