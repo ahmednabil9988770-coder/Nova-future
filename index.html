@@ -1,0 +1,1124 @@
+<!DOCTYPE html>  
+<html lang="ar" dir="rtl" class="dark">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title id="page-title">Nova Future - Educational Platform</title>  
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <script>  
+        tailwind.config = {  
+            darkMode: 'class',  
+        }  
+    </script>  
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">  
+    <style>  
+        body { font-family: 'Cairo', sans-serif; }  
+        .view-section { display: none; }  
+        .view-section.active { display: block; }  
+        #dropdown-menu {  
+            max-height: 0;  
+            overflow: hidden;  
+            transition: max-height 0.3s ease-in-out;  
+        }  
+        #dropdown-menu.open {  
+            max-height: 480px;  
+        }  
+    </style>  
+</head>  
+<body class="min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-[#0b0f19] text-gray-900 dark:text-white transition-colors duration-300">  <!-- 1. AUTH SCREEN -->  
+<div id="auth-screen" class="w-full max-w-md bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-8 rounded-2xl shadow-2xl space-y-6">  
+    <div class="text-center space-y-3">  
+        <div id="auth-logo-box" class="theme-auth-box inline-flex items-center justify-between bg-gradient-to-r from-purple-900/60 to-indigo-900/60 border border-purple-500/35 px-4 py-3 rounded-2xl w-full text-white transition-colors">  
+            <div id="auth-logo-text-box" class="flex flex-col text-right">  
+                <span class="text-sm font-black tracking-wider">NOVA FUTURE</span>  
+                <span id="auth-sub-logo" class="text-[9px] tracking-wider text-purple-200 font-medium">.LEARN TODAY. SHAPE TOMORROW.</span>  
+            </div>  
+            <svg class="w-6 h-6 text-purple-300 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>  
+        </div>  
+        <h1 id="auth-title" class="text-xl font-bold pt-1">تسجيل الدخول للمنصة</h1>  
+        <p id="auth-subtitle" class="text-xs text-gray-500 dark:text-gray-400">Nova Future Educational Platform</p>  
+    </div>  
+
+    <div class="space-y-4">  
+        <div>  
+            <label id="lbl-username" class="block text-xs text-gray-500 dark:text-gray-400 mb-1">اسم المستخدم</label>  
+            <input type="text" id="username" placeholder="اكتب اسمك هنا..." class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-xl p-3 text-sm focus:outline-none focus:border-purple-600">  
+        </div>  
+          
+        <div>  
+            <label id="lbl-password" class="block text-xs text-gray-500 dark:text-gray-400 mb-1">كلمة المرور</label>  
+            <div class="relative">  
+                <input type="password" id="password" placeholder="••••••••" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-xl p-3 pl-10 text-sm focus:outline-none focus:border-purple-600">  
+                <button type="button" onclick="togglePasswordVisibility('password', 'eye-icon-1')" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">  
+                    <svg id="eye-icon-1" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>  
+                </button>  
+            </div>  
+        </div>  
+
+        <div id="confirm-pass-box" class="hidden">  
+            <label id="lbl-confirm" class="block text-xs text-gray-500 dark:text-gray-400 mb-1">تأكيد كلمة المرور</label>  
+            <div class="relative">  
+                <input type="password" id="confirm-password" placeholder="••••••••" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-xl p-3 pl-10 text-sm focus:outline-none focus:border-purple-600">  
+                <button type="button" onclick="togglePasswordVisibility('confirm-password', 'eye-icon-2')" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">  
+                    <svg id="eye-icon-2" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>  
+                </button>  
+            </div>  
+        </div>  
+
+        <div>  
+            <label id="lbl-role" class="block text-xs text-gray-500 dark:text-gray-400 mb-1">نوع الحساب</label>  
+            <select id="role" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-xl p-3 text-sm focus:outline-none focus:border-purple-600">  
+                <option value="student">طالب / طالبة</option>  
+                <option value="teacher">معلم / معلمة</option>  
+            </select>  
+        </div>  
+
+        <div>  
+            <button id="auth-btn" onclick="handleAuth()" class="w-full theme-btn bg-purple-600 hover:bg-purple-700 text-white transition py-3 rounded-xl font-bold text-sm shadow-lg shadow-purple-600/30">  
+                تسجيل الدخول  
+            </button>  
+        </div>  
+    </div>  
+
+    <div class="text-center">  
+        <button onclick="toggleAuthMode()" id="toggle-auth-text" class="text-xs text-purple-600 dark:text-purple-400 hover:underline">  
+            ليس لديك حساب؟ اضغط هنا لإنشاء حساب جديد  
+        </button>  
+    </div>  
+
+    <!-- توقيع المطور أسفل شاشة الدخول -->  
+    <div class="text-center pt-2 border-t border-gray-100 dark:border-gray-800/80">  
+        <p class="text-[11px] font-semibold tracking-wide text-gray-400 dark:text-gray-500">  
+            Designed & Developed by <span class="text-purple-600 dark:text-purple-400 font-bold">Ahmed Nabil</span>  
+        </p>  
+    </div>  
+
+    <p id="msg" class="text-xs text-center hidden"></p>  
+</div>  
+
+<!-- 2. FULL PLATFORM DASHBOARD -->  
+<div id="platform-container" class="hidden w-full min-h-screen flex flex-col relative">  
+      
+    <!-- Top Navigation Bar -->  
+    <header class="bg-white dark:bg-[#111827] border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 transition-colors">  
+        <div id="header-inner" class="max-w-7xl mx-auto px-4 py-2.5 flex justify-between items-center flex-row">  
+              
+            <div class="flex items-center gap-2">  
+                <div id="header-avatar-container" onclick="goToProfile()" class="w-9 h-9 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-sm overflow-hidden border border-purple-400/40 cursor-pointer hover:scale-105 transition-transform" title="الانتقال للملف الشخصي">  
+                    أ  
+                </div>  
+                <div id="header-logo-box" class="theme-header-logo hidden sm:flex items-center gap-2 bg-purple-100 dark:bg-purple-950/40 border border-purple-300 dark:border-purple-500/20 px-3 py-1.5 rounded-xl transition-colors">  
+                    <div id="header-logo-texts" class="flex flex-col text-right">  
+                        <span class="text-[10px] font-black tracking-wider text-purple-900 dark:text-white theme-logo-txt">NOVA FUTURE</span>  
+                        <span class="text-[6px] tracking-wider text-purple-600 dark:text-purple-300 font-semibold theme-sub-txt">.LEARN TODAY. SHAPE TOMORROW.</span>  
+                    </div>  
+                </div>  
+            </div>  
+
+            <div class="text-center">  
+                <span id="user-welcome-header" class="text-xs md:text-sm font-bold text-purple-600 dark:text-purple-300 theme-accent-txt">أهلاً بك يا بطل!</span>  
+            </div>  
+
+            <button onclick="toggleTopMenu()" class="flex items-center gap-2 theme-menu-btn bg-purple-600/10 dark:bg-purple-600/20 border border-purple-500/30 text-purple-700 dark:text-purple-300 px-3 py-1.5 rounded-xl text-xs font-bold hover:bg-purple-600/20 transition">  
+                <span id="nav-menu-text">القائمة</span>  
+                <span id="menu-arrow" class="transition-transform duration-300">▼</span>  
+            </button>  
+        </div>  
+
+        <!-- قائمة التنقل المنسدلة -->  
+        <nav id="dropdown-menu" class="max-w-7xl mx-auto px-4 bg-white dark:bg-[#111827] border-t border-gray-200 dark:border-gray-800/60 transition-colors">  
+            <div id="nav-tabs-container" class="py-3 grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap gap-2">  
+                <!-- ديناميكي حسب الحساب -->  
+            </div>  
+        </nav>  
+    </header>  
+
+    <!-- Main Content Area -->  
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 space-y-6">  
+          
+        <!-- ================= STUDENT SECTIONS ================= -->  
+        <section id="dashboard" class="view-section active space-y-6 student-view">  
+            <div class="theme-banner bg-gradient-to-r from-purple-100 dark:from-purple-900/40 via-indigo-50 dark:via-indigo-900/30 to-white dark:to-[#111827] border border-purple-200 dark:border-purple-500/30 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 transition-colors">  
+                <div class="space-y-2">  
+                    <h2 class="text-xl md:text-2xl font-bold" id="dash-welcome-title">مرحباً بك في منصة Nova Future الذكية</h2>  
+                    <p class="text-gray-600 dark:text-gray-400 text-sm" id="dash-welcome-sub">تحدي نفسك .. تطور .. تفوقك يبدأ من هنا.</p>  
+                </div>  
+                <button onclick="switchTab('exams', document.getElementById('tab-exams'))" class="theme-btn bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-purple-600/30">ابدأ التحدي الآن</button>  
+            </div>  
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">  
+                <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-5 rounded-2xl transition-colors">  
+                    <p id="stat-lbl-1" class="text-xs text-gray-500 dark:text-gray-400">الامتحانات المتاحة</p>  
+                    <h3 class="text-2xl font-bold mt-1 text-purple-600 dark:text-purple-400 theme-accent-txt" id="student-exams-count">5</h3>  
+                </div>  
+                <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-5 rounded-2xl transition-colors">  
+                    <p id="stat-lbl-2" class="text-xs text-gray-500 dark:text-gray-400">معدل النجاح</p>  
+                    <h3 class="text-2xl font-bold mt-1" id="student-success-rate">85%</h3>  
+                </div>  
+                <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-5 rounded-2xl transition-colors">  
+                    <p id="stat-lbl-3" class="text-xs text-gray-500 dark:text-gray-400">أعلى درجة</p>  
+                    <h3 class="text-2xl font-bold mt-1 text-green-600 dark:text-green-400" id="student-top-score">18/20</h3>  
+                </div>  
+            </div>  
+        </section>  
+
+        <section id="exams" class="view-section space-y-6 student-view">  
+            <h2 id="exams-title-text" class="text-xl font-bold">📚 الامتحانات المتاحة</h2>  
+            <div id="exams-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">  
+                <!-- سيتم تعبئتها ديناميكياً -->  
+            </div>  
+        </section>  
+
+        <!-- واجهة الامتحان التفاعلي الفعلي -->  
+        <section id="exam-active-room" class="view-section space-y-6 student-view">  
+            <div class="bg-white dark:bg-[#111827] border border-purple-500/40 p-6 rounded-2xl space-y-6 shadow-xl">  
+                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-4">  
+                    <div>  
+                        <h3 id="active-exam-title" class="text-lg font-bold text-purple-600 dark:text-purple-400">عنوان الامتحان</h3>  
+                        <p class="text-xs text-gray-500 mt-1" id="active-exam-progress">السؤال 1 من 3</p>  
+                    </div>  
+                    <div class="bg-purple-100 dark:bg-purple-950/60 border border-purple-300 dark:border-purple-500/30 px-4 py-2 rounded-xl text-xs font-bold text-purple-700 dark:text-purple-300">  
+                        ⏱️ متبقي: <span id="exam-timer">05:00</span>  
+                    </div>  
+                </div>  
+
+                <div class="space-y-4">  
+                    <h4 id="question-prompt" class="text-base font-bold text-gray-800 dark:text-gray-100">نص السؤال هنا؟</h4>  
+                    <div id="options-container" class="grid grid-cols-1 gap-3">  
+                        <!-- الخيارات التفاعلية -->  
+                    </div>  
+                </div>  
+
+                <div class="flex justify-between pt-4 border-t border-gray-200 dark:border-gray-800">  
+                    <button onclick="cancelActiveExam()" class="bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 text-xs px-5 py-2.5 rounded-xl font-bold transition">إلغاء الامتحان</button>  
+                    <button onclick="nextExamQuestion()" id="next-question-btn" class="theme-btn bg-purple-600 hover:bg-purple-700 text-white text-xs px-6 py-2.5 rounded-xl font-bold shadow-lg transition">السؤال التالي ⬅</button>  
+                </div>  
+            </div>  
+        </section>  
+
+        <section id="results" class="view-section space-y-6 student-view">  
+            <h2 id="results-title-text" class="text-xl font-bold">📊 نتائج الامتحانات الأخيرة</h2>  
+            <div id="results-list-container" class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-5 rounded-2xl space-y-3 transition-colors">  
+                <!-- النتائج تعبأ ديناميكياً بالألوان الصحيحة -->  
+            </div>  
+        </section>  
+
+        <section id="leaderboard" class="view-section space-y-6 student-view">  
+            <h2 id="leader-title-text" class="text-xl font-bold">🏆 لوحة المتصدرين</h2>  
+            <div class="space-y-3">  
+                <div class="theme-leader-box flex items-center justify-between bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-500/30 p-4 rounded-2xl transition-colors">  
+                    <div class="flex items-center gap-3">  
+                        <span class="text-xl font-bold text-yellow-500">🥇</span>  
+                        <span class="font-bold">أحمد محمد</span>  
+                    </div>  
+                    <span class="text-purple-600 dark:text-purple-300 font-bold theme-accent-txt">96%</span>  
+                </div>  
+            </div>  
+        </section>  
+
+        <section id="stats" class="view-section space-y-6 student-view">  
+            <h2 id="stats-title-text" class="text-xl font-bold">📈 إحصائيات الأداء</h2>  
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">  
+                <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-4 rounded-xl text-center transition-colors">  
+                    <p class="text-xs text-gray-500 dark:text-gray-400">الامتحانات المجتازة</p>  
+                    <h3 class="text-xl font-bold mt-1 text-purple-600 dark:text-purple-400 theme-accent-txt" id="passed-exams-stat">7</h3>  
+                </div>  
+            </div>  
+        </section>  
+
+
+        <!-- ================= TEACHER SECTIONS ================= -->  
+        <section id="teacher-dash" class="view-section space-y-6 teacher-view">  
+            <div class="theme-banner bg-gradient-to-r from-blue-100 dark:from-blue-900/40 via-indigo-50 dark:via-indigo-900/30 to-white dark:to-[#111827] border border-blue-200 dark:border-blue-500/30 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 transition-colors">  
+                <div class="space-y-2">  
+                    <h2 class="text-xl md:text-2xl font-bold">لوحة تحكم المعلمة 👩‍🏫</h2>  
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">أهلاً بكِ أستاذة! يمكنكِ هنا إنشاء الامتحانات، إضافة الأسئلة وإدارتها، ومتابعة الطلاب.</p>  
+                </div>  
+                <button onclick="switchTab('teacher-create-exam', document.getElementById('tab-teacher-create'))" class="theme-btn bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-blue-600/30">+ إنشاء امتحان جديد</button>  
+            </div>  
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">  
+                <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-5 rounded-2xl transition-colors">  
+                    <p class="text-xs text-gray-500 dark:text-gray-400">الطلاب المسجلين</p>  
+                    <h3 class="text-2xl font-bold mt-1 text-blue-600 dark:text-blue-400">42 طالب/ة</h3>  
+                </div>  
+                <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-5 rounded-2xl transition-colors">  
+                    <p class="text-xs text-gray-500 dark:text-gray-400">الامتحانات المُنشأة</p>  
+                    <h3 class="text-2xl font-bold mt-1" id="teacher-exam-count-box">6 امتحانات</h3>  
+                </div>  
+                <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-5 rounded-2xl transition-colors">  
+                    <p class="text-xs text-gray-500 dark:text-gray-400">متوسط درجات الطلاب</p>  
+                    <h3 class="text-2xl font-bold mt-1 text-green-600">88%</h3>  
+                </div>  
+            </div>  
+        </section>  
+
+        <section id="teacher-create-exam" class="view-section space-y-6 teacher-view">  
+            <h2 class="text-xl font-bold">📝 إنشاء وتعديل الاختبارات وإضافة الأسئلة</h2>  
+            <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-5 transition-colors">  
+                <div>  
+                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">عنوان الامتحان الرئيسي</label>  
+                    <input type="text" id="exam-main-title" placeholder="مثال: امتحان الفيزياء - الفصل الأول" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-600">  
+                </div>  
+
+                <div class="border-t border-gray-200 dark:border-gray-800 pt-4 space-y-4">  
+                    <h3 class="font-bold text-sm text-blue-600">أضف الأسئلة والخيارات والإجابة الصحيحة:</h3>  
+                      
+                    <div class="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 p-4 rounded-xl space-y-3">  
+                        <div>  
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">نص السؤال</label>  
+                            <input type="text" id="question-text" placeholder="اكتب السؤال هنا..." class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg p-2.5 text-xs focus:outline-none focus:border-blue-600">  
+                        </div>  
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">  
+                            <input type="text" id="opt-1" placeholder="الخيار الأول" class="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg p-2 text-xs">  
+                            <input type="text" id="opt-2" placeholder="الخيار الثاني" class="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg p-2 text-xs">  
+                            <input type="text" id="opt-3" placeholder="الخيار الثالث (اختياري)" class="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg p-2 text-xs">  
+                            <input type="text" id="opt-4" placeholder="الخيار الرابع (اختياري)" class="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg p-2 text-xs">  
+                        </div>  
+                        <div>  
+                            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">رقم الخيار الصحيح (1 أو 2 أو 3 أو 4)</label>  
+                            <input type="number" id="correct-answer-index" min="1" max="4" placeholder="مثال: 1" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-lg p-2 text-xs">  
+                        </div>  
+                        <button onclick="addQuestionToExamList()" class="bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 text-xs px-4 py-2 rounded-lg font-bold transition">  
+                            + إضافة هذا السؤال للقائمة  
+                        </button>  
+                    </div>  
+
+                    <div id="added-questions-preview" class="text-xs text-gray-500 dark:text-gray-400 space-y-1">  
+                        <p>الأسئلة المضافة حالياً: <span id="q-count-indicator" class="font-bold text-blue-600">0</span> أسئلة</p>  
+                    </div>  
+                </div>  
+
+                <button onclick="publishExamToStudents()" class="theme-btn bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl text-xs font-bold transition w-full shadow-lg">  
+                    🚀 نشر الامتحان الكامل للطلاب  
+                </button>  
+            </div>  
+        </section>  
+
+        <section id="teacher-students" class="view-section space-y-6 teacher-view">  
+            <h2 class="text-xl font-bold">👥 متابعة الطلاب والدرجات</h2>  
+            <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-5 rounded-2xl space-y-3 transition-colors">  
+                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-3">  
+                    <span class="font-bold">أحمد محمد (طالب)</span>  
+                    <span class="text-blue-600 font-bold">متوسط الدرجات: 96%</span>  
+                </div>  
+            </div>  
+        </section>  
+
+
+        <!-- ================= REPO / FILES SECTION (SHARED FOR TEACHER & STUDENT) ================= -->  
+        <section id="files-repo" class="view-section space-y-6">  
+            <div class="theme-banner bg-gradient-to-r from-emerald-100 dark:from-emerald-900/40 via-teal-50 dark:via-teal-900/30 to-white dark:to-[#111827] border border-emerald-200 dark:border-emerald-500/30 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 transition-colors">  
+                <div class="space-y-2">  
+                    <h2 class="text-xl md:text-2xl font-bold">📁 قسم رفع وتصفح الملفات والصور</h2>  
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">مشاركة المحاضرات، الملخصات، والصور الدراسية لتكون متاحة للجميع.</p>  
+                </div>  
+                <div class="relative overflow-hidden inline-block">  
+                    <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-bold text-xs shadow-lg transition">رفع ملف أو صورة جديدة 📤</button>  
+                    <input type="file" onchange="uploadPlatformFile(event)" class="absolute inset-0 opacity-0 cursor-pointer">  
+                </div>  
+            </div>  
+
+            <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-4 transition-colors">  
+                <h3 class="font-bold text-sm text-emerald-600 dark:text-emerald-400">الملفات والمستندات المتاحة على المنصة:</h3>  
+                <div id="platform-files-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">  
+                    <!-- ديناميكي من LocalStorage -->  
+                </div>  
+            </div>  
+        </section>  
+
+
+        <!-- ================= COMMON SECTIONS (PROFILE & SETTINGS) ================= -->  
+        <section id="profile" class="view-section space-y-6">  
+            <h2 id="profile-title-text" class="text-xl font-bold">👤 الملف الشخصي وتعديل البيانات</h2>  
+            <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-6 transition-colors">  
+                  
+                <div class="flex flex-col sm:flex-row items-center gap-6 border-b border-gray-200 dark:border-gray-800 pb-6">  
+                    <div class="relative">  
+                        <div id="profile-avatar-box" class="theme-avatar-circle w-24 h-24 bg-purple-600 text-white rounded-full flex items-center justify-center text-3xl font-bold shadow-lg overflow-hidden border-2 border-purple-400 transition-colors">  
+                            أ  
+                        </div>  
+                    </div>  
+                    <div class="text-center sm:text-right space-y-1">  
+                        <h3 id="profile-username-display" class="text-xl font-bold">اسم المستخدم</h3>  
+                        <p id="profile-role-text" class="text-xs text-purple-600 dark:text-purple-400 font-semibold theme-accent-txt">طالب / طالبة</p>  
+                        <p id="profile-bio-display" class="text-xs text-gray-500 dark:text-gray-400 mt-1">لا توجد نبذة شخصية بعد...</p>  
+                    </div>  
+                </div>  
+
+                <div class="space-y-3 border-b border-gray-200 dark:border-gray-800 pb-6">  
+                    <label id="avatar-label-text" class="block text-xs font-bold text-gray-700 dark:text-gray-300">اختر صورة رمزية (Avatar) أو ارفع صورتك:</label>  
+                    <div class="flex flex-wrap items-center gap-3">  
+                        <button onclick="setAvatarImg('👨‍🎓')" class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl hover:scale-105 transition">👨‍🎓</button>  
+                        <button onclick="setAvatarImg('👩‍🎓')" class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl hover:scale-105 transition">👩‍🎓</button>  
+                        <button onclick="setAvatarImg('⚡')" class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl hover:scale-105 transition">⚡</button>  
+                        <button onclick="setAvatarImg('🦁')" class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-2xl hover:scale-105 transition">🦁</button>  
+                        <div class="relative overflow-hidden inline-block">  
+                            <button id="upload-btn-text" class="bg-gray-200 dark:bg-gray-800 text-xs px-3 py-2.5 rounded-xl font-bold hover:bg-gray-300 transition">رفع صورة من جهازك 📁</button>  
+                            <input type="file" id="avatar-file-input" accept="image/*" onchange="uploadCustomAvatar(event)" class="absolute inset-0 opacity-0 cursor-pointer">  
+                        </div>  
+                    </div>  
+                </div>  
+
+                <div class="space-y-4 border-b border-gray-200 dark:border-gray-800 pb-6">  
+                    <h3 id="edit-profile-title" class="font-bold text-sm text-purple-600 dark:text-purple-400 theme-accent-txt">تعديل الملف الشخصي</h3>  
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">  
+                        <div>  
+                            <label id="lbl-edit-name" class="block text-xs text-gray-500 dark:text-gray-400 mb-1">تعديل الاسم</label>  
+                            <input type="text" id="edit-username" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-xl p-3 text-sm focus:outline-none focus:border-purple-600">  
+                        </div>  
+                        <div>  
+                            <label id="lbl-edit-bio" class="block text-xs text-gray-500 dark:text-gray-400 mb-1">النبذة الشخصية (Bio)</label>  
+                            <input type="text" id="edit-bio" placeholder="اكتب شيئاً عن نفسك..." class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-xl p-3 text-sm focus:outline-none focus:border-purple-600">  
+                        </div>  
+                    </div>  
+                    <button onclick="saveProfileChanges()" id="save-profile-btn" class="theme-btn bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition">  
+                        حفظ التغييرات  
+                    </button>  
+                </div>  
+
+                <div class="space-y-3">  
+                    <h3 id="badges-title" class="font-bold text-sm text-purple-600 dark:text-purple-400 theme-accent-txt">الشارات والإنجازات المكتسبة 🏅</h3>  
+                    <div class="flex flex-wrap gap-2">  
+                        <span id="badge-1" class="bg-purple-100 dark:bg-purple-950/50 text-purple-600 dark:text-purple-300 border border-purple-300 dark:border-purple-500/30 px-3 py-1.5 rounded-xl text-xs font-bold">⭐ العضو النشط</span>  
+                    </div>  
+                </div>  
+
+            </div>  
+        </section>  
+
+        <section id="settings" class="view-section space-y-6">  
+            <h2 id="settings-title-text" class="text-xl font-bold">⚙️ ضبط وتفضيلات المنصة</h2>  
+            <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-6 transition-colors">  
+                  
+                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-4">  
+                    <div>  
+                        <h3 id="set-mode-title" class="font-bold text-sm">مظهر المنصة (Dark / Light Mode)</h3>  
+                        <p id="set-mode-sub" class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">التبديل بين الوضع المظلم والفاتح</p>  
+                    </div>  
+                    <button onclick="toggleDarkMode()" id="dark-mode-btn" class="theme-btn bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">  
+                        ☀️ الوضع الفاتح  
+                    </button>  
+                </div>  
+
+                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-4">  
+                    <div>  
+                        <h3 id="set-lang-title" class="font-bold text-sm">لغة المنصة (Language)</h3>  
+                        <p id="set-lang-sub" class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">التبديل بين العربية والإنجليزية</p>  
+                    </div>  
+                    <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none">  
+                        <option value="ar">العربية (Arabic)</option>  
+                        <option value="en">English (الإنجليزية)</option>  
+                    </select>  
+                </div>  
+
+                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-4">  
+                    <div>  
+                        <h3 id="set-color-title" class="font-bold text-sm">لون هويّة المنصة</h3>  
+                        <p id="set-color-sub" class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">اختر لونك المفضل لأزرار الواجهة</p>  
+                    </div>  
+                    <div class="flex gap-2">  
+                        <button onclick="setThemeColor('purple')" class="w-7 h-7 rounded-full bg-purple-600 border-2 border-white shadow hover:scale-110 transition"></button>  
+                        <button onclick="setThemeColor('blue')" class="w-7 h-7 rounded-full bg-blue-600 border-2 border-white shadow hover:scale-110 transition"></button>  
+                        <button onclick="setThemeColor('emerald')" class="w-7 h-7 rounded-full bg-emerald-600 border-2 border-white shadow hover:scale-110 transition"></button>  
+                    </div>  
+                </div>  
+
+            </div>  
+        </section>  
+
+    </main>  
+
+    <!-- الفوتر السفلي للمنصة يتضمن بصمة المطور -->  
+    <footer class="bg-white dark:bg-[#111827] border-t border-gray-200 dark:border-gray-800 py-4 px-6 mt-auto text-center transition-colors">  
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-gray-500 dark:text-gray-400">  
+            <p>© 2026 Nova Future Educational Platform. All rights reserved.</p>  
+            <p class="font-semibold">  
+                Designed & Developed by <span class="text-purple-600 dark:text-purple-400 font-bold">Ahmed Nabil</span>  
+            </p>  
+        </div>  
+    </footer>  
+</div>  
+
+<!-- نافذة تأكيد تسجيل الخروج (Modal) -->  
+<div id="logout-confirm-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">  
+    <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl max-w-sm w-full space-y-4 text-center">  
+        <h3 class="text-lg font-bold">⚠️ تأكيد تسجيل الخروج</h3>  
+        <p class="text-xs text-gray-500 dark:text-gray-400">هل أنت متأكد أنك تريد مغادرة حسابك والعودة لصفحة الدخول؟</p>  
+        <div class="flex gap-2 pt-2">  
+            <button onclick="confirmLogout()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-xl font-bold text-xs transition">نعم، تسجيل الخروج</button>  
+            <button onclick="closeLogoutModal()" class="flex-1 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 py-2.5 rounded-xl font-bold text-xs transition">إلغاء</button>  
+        </div>  
+    </div>  
+</div>  
+
+<!-- النافذة المنبثقة المخصصة لنتيجة الامتحان (Custom Modal) -->  
+<div id="result-custom-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">  
+    <div class="bg-[#1a1625] border border-[#4a3565] p-6 rounded-2xl max-w-sm w-full space-y-4 text-center text-white shadow-2xl">  
+        <div class="text-4xl mb-1">🎉</div>  
+        <h3 class="text-lg font-bold">انتهى الامتحان بنجاح!</h3>  
+        <p id="custom-modal-msg" class="text-sm text-[#b8b8b8]">درجتك: 0 من 0 (0%)</p>  
+        <button onclick="closeResultCustomModal()" class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white py-2.5 rounded-xl font-bold text-xs transition">حسناً</button>  
+    </div>  
+</div>  
+
+<script>  
+    let isRegisterMode = false;  
+    let currentUser = '';  
+    let currentRole = 'student';  
+    let navigationHistory = [];  
+      
+    let registeredUsers = JSON.parse(localStorage.getItem('nova_users')) || {  
+        "أحمد": { pass: "123456", role: "student" },  
+        "المعلمة": { pass: "123456", role: "teacher" }  
+    };  
+
+    let createdExams = JSON.parse(localStorage.getItem('nova_exams')) || [  
+        {  
+            id: 1,  
+            title: "امتحان التاريخ العام (الفصل الأول)",  
+            questions: [  
+                { text: "في أي عام قامت ثورة 1919 في مصر؟", options: ["1917", "1919", "1922", "1924"], correct: 2 },  
+                { text: "من هو قائد ثورة 1919؟", options: ["مصطفى كامل", "سعد زغلول", "محمد فريد", "أحمد عرابي"], correct: 2 }  
+            ]  
+        }  
+    ];  
+
+    let studentResults = JSON.parse(localStorage.getItem('nova_results')) || [  
+        { examTitle: "امتحان التاريخ العام", score: "2 / 2 (100% - ممتاز ⭐)", date: "2026-08-30", percentage: 100 }  
+    ];  
+
+    let platformFiles = JSON.parse(localStorage.getItem('nova_files')) || [  
+        { name: "ملخص الفيزياء العام.pdf", type: "PDF", size: "2.4 MB", author: "المعلمة", data: "#" }  
+    ];  
+
+    let tempQuestions = [];  
+    let currentActiveExam = null;  
+    let currentQuestionIndex = 0;  
+    let scoreCounter = 0;  
+    let timerInterval = null;  
+
+    function saveAllData() {  
+        localStorage.setItem('nova_users', JSON.stringify(registeredUsers));  
+        localStorage.setItem('nova_exams', JSON.stringify(createdExams));  
+        localStorage.setItem('nova_results', JSON.stringify(studentResults));  
+        localStorage.setItem('nova_files', JSON.stringify(platformFiles));  
+    }  
+
+    function togglePasswordVisibility(fieldId, iconId) {  
+        const passwordInput = document.getElementById(fieldId);  
+        const icon = document.getElementById(iconId);  
+
+        if (passwordInput.type === 'password') {  
+            passwordInput.type = 'text';  
+            icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>`;  
+        } else {  
+            passwordInput.type = 'password';  
+            icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;  
+        }  
+    }  
+
+    function toggleAuthMode() {  
+        isRegisterMode = !isRegisterMode;  
+        const title = document.getElementById('auth-title');  
+        const subtitle = document.getElementById('auth-subtitle');  
+        const btn = document.getElementById('auth-btn');  
+        const toggleText = document.getElementById('toggle-auth-text');  
+        const confirmBox = document.getElementById('confirm-pass-box');  
+
+        if (isRegisterMode) {  
+            title.innerText = 'إنشاء حساب جديد';  
+            subtitle.innerText = 'انضم إلى منصة Nova Future الآن';  
+            btn.innerText = 'إنشاء الحساب والدخول';  
+            toggleText.innerText = 'لديك حساب بالفعل؟ اضغط هنا لتسجيل الدخول';  
+            confirmBox.classList.remove('hidden');  
+        } else {  
+            title.innerText = 'تسجيل الدخول للمنصة';  
+            subtitle.innerText = 'Nova Future Educational Platform';  
+            btn.innerText = 'تسجيل الدخول';  
+            toggleText.innerText = 'ليس لديك حساب؟ اضغط هنا لإنشاء حساب جديد';  
+            confirmBox.classList.add('hidden');  
+        }  
+    }  
+
+    function toggleTopMenu() {  
+        const menu = document.getElementById('dropdown-menu');  
+        const arrow = document.getElementById('menu-arrow');  
+        menu.classList.toggle('open');  
+        arrow.style.transform = menu.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';  
+    }  
+
+    function goToProfile() {  
+        const profileTabBtn = document.getElementById('tab-profile');  
+        if (profileTabBtn) {  
+            switchTab('profile', profileTabBtn);  
+        }  
+    }  
+
+    function setupNavigationTabs(role) {  
+        const container = document.getElementById('nav-tabs-container');  
+        if (role === 'teacher') {  
+            container.innerHTML = `  
+                <button onclick="switchTab('teacher-dash', this)" id="tab-teacher-home" class="tab-btn bg-blue-600 text-white px-3 py-2 rounded-xl font-semibold transition text-xs flex items-center justify-center gap-2">🏠 لوحة التحكم</button>  
+                <button onclick="switchTab('teacher-create-exam', this)" id="tab-teacher-create" class="tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">📝 إنشاء امتحان</button>  
+                <button onclick="switchTab('teacher-students', this)" id="tab-teacher-students" class="tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">👥 متابعة الطلاب</button>  
+                <button onclick="switchTab('files-repo', this)" id="tab-files" class="tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">📁 رفع الملفات</button>  
+                <button onclick="switchTab('profile', this)" id="tab-profile" class="tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">👤 الملف الشخصي</button>  
+                <button onclick="switchTab('settings', this)" id="tab-settings" class="tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">⚙️ الضبط</button>  
+                <button onclick="promptLogout()" id="tab-logout" class="text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950/30 border border-red-500/20 hover:bg-red-100 dark:hover:bg-red-900/40 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">🚪 خروج</button>  
+            `;  
+        } else {  
+            container.innerHTML = `  
+                <button onclick="switchTab('dashboard', this)" id="tab-home" class="tab-btn bg-purple-600 text-white px-3 py-2 rounded-xl font-semibold transition text-xs flex items-center justify-center gap-2">🏠 الرئيسية</button>  
+                <button onclick="switchTab('exams', this)" id="tab-exams" class="tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">📚 الامتحانات</button>  
+                <button onclick="switchTab('results', this)" id="tab-results" class="tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">📊 النتائج</button>  
+                <button onclick="switchTab('leaderboard', this)" id="tab-leaders" class="tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">🏆 المتصدرين</button>  
+                <button onclick="switchTab('stats', this)" id="tab-stats" class="tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">📈 إحصائياتي</button>  
+                <button onclick="switchTab('files-repo', this)" id="tab-files" class="tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">📁 الملفات</button>  
+                <button onclick="switchTab('profile', this)" id="tab-profile" class="tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">👤 الملف الشخصي</button>  
+                <button onclick="switchTab('settings', this)" id="tab-settings" class="tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">⚙️ الضبط</button>  
+                <button onclick="promptLogout()" id="tab-logout" class="text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950/30 border border-red-500/20 hover:bg-red-100 dark:hover:bg-red-900/40 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2">🚪 خروج</button>  
+            `;  
+        }  
+    }  
+
+    function handleAuth() {  
+        const user = document.getElementById('username').value.trim();  
+        const pass = document.getElementById('password').value.trim();  
+        const confirmPass = document.getElementById('confirm-password').value.trim();  
+        const roleSelect = document.getElementById('role');  
+        const selectedRole = roleSelect.value;  
+        const msg = document.getElementById('msg');  
+
+        if (!user || !pass) {  
+            msg.innerText = 'الرجاء إدخال اسم المستخدم وكلمة المرور!';  
+            msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
+            msg.classList.remove('hidden');  
+            return;  
+        }  
+
+        if (isRegisterMode) {  
+            if (pass !== confirmPass) {  
+                msg.innerText = 'كلمتا المرور غير متطابقتين!';  
+                msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
+                msg.classList.remove('hidden');  
+                return;  
+            }  
+            if (registeredUsers[user]) {  
+                msg.innerText = 'اسم المستخدم موجود بالفعل!';  
+                msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
+                msg.classList.remove('hidden');  
+                return;  
+            }  
+            registeredUsers[user] = { pass, role: selectedRole };  
+            saveAllData();  
+            currentRole = selectedRole;  
+            msg.innerText = 'تم إنشاء الحساب بنجاح! جاري الدخول...';  
+            msg.className = 'text-xs text-center text-green-500 dark:text-green-400 mt-2';  
+            msg.classList.remove('hidden');  
+        } else {  
+            if (!registeredUsers[user]) {  
+                registeredUsers[user] = { pass, role: selectedRole };  
+                saveAllData();  
+            }  
+
+            if (registeredUsers[user].pass !== pass) {  
+                msg.innerText = 'كلمة المرور غير صحيحة!';  
+                msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
+                msg.classList.remove('hidden');  
+                return;  
+            }  
+
+            currentRole = registeredUsers[user].role;  
+            if (currentRole !== selectedRole) {  
+                msg.innerText = `عذراً! هذا الحساب مسجل كـ (${currentRole === 'teacher' ? 'معلم' : 'طالب'})، يرجى اختيار النوع الصحيح من القائمة.`;  
+                msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
+                msg.classList.remove('hidden');  
+                return;  
+            }  
+        }  
+
+        setTimeout(() => {  
+            proceedLoginSuccess(user, currentRole);  
+        }, isRegisterMode ? 800 : 200);  
+    }  
+
+    function proceedLoginSuccess(user, role) {  
+        currentUser = user;  
+        currentRole = role;  
+        document.getElementById('auth-screen').classList.add('hidden');  
+        document.getElementById('platform-container').classList.remove('hidden');  
+        document.body.classList.remove('flex', 'items-center', 'justify-center');  
+        document.getElementById('msg').classList.add('hidden');  
+
+        setupNavigationTabs(currentRole);  
+
+        document.getElementById('user-welcome-header').innerText = `أهلاً بك يا ${user}`;  
+        document.getElementById('profile-username-display').innerText = user;  
+        document.getElementById('edit-username').value = user;  
+        document.getElementById('profile-role-text').innerText = currentRole === 'teacher' ? 'معلم / معلمة' : 'طالب / طالبة';  
+        document.getElementById('profile-avatar-box').innerText = user.charAt(0).toUpperCase();  
+        document.getElementById('header-avatar-container').innerText = user.charAt(0).toUpperCase();  
+          
+        renderExamsList();  
+        renderResultsList();  
+        renderPlatformFiles();  
+
+        navigationHistory = [];  
+        if (currentRole === 'teacher') {  
+            pushStateSection('teacher-dash', document.getElementById('tab-teacher-home'), false);  
+            document.getElementById('teacher-exam-count-box').innerText = `${createdExams.length} امتحانات`;  
+        } else {  
+            pushStateSection('dashboard', document.getElementById('tab-home'), false);  
+            document.getElementById('student-exams-count').innerText = createdExams.length;  
+        }  
+
+        setThemeColor('purple');  
+    }  
+
+    function pushStateSection(tabId, btn, pushToHistory = true) {  
+        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));  
+        document.getElementById(tabId).classList.add('active');  
+
+        document.querySelectorAll('.tab-btn').forEach(b => {  
+            b.className = 'tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2';  
+        });  
+          
+        let colorClass = currentRole === 'teacher' ? 'bg-blue-600' : 'bg-purple-600';  
+        if (btn) {  
+            btn.className = `tab-btn ${colorClass} text-white font-semibold px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2`;  
+        }  
+
+        const menu = document.getElementById('dropdown-menu');  
+        if (menu.classList.contains('open')) {  
+            toggleTopMenu();  
+        }  
+
+        if (pushToHistory) {  
+            if (navigationHistory[navigationHistory.length - 1] !== tabId) {  
+                navigationHistory.push(tabId);  
+                history.pushState({ tabId: tabId }, "", "");  
+            }  
+        } else {  
+            navigationHistory = [tabId];  
+            history.replaceState({ tabId: tabId }, "", "");  
+        }  
+    }  
+
+    function switchTab(tabId, btn) {  
+        pushStateSection(tabId, btn, true);  
+    }  
+
+    window.addEventListener('popstate', function(event) {  
+        const authScreen = document.getElementById('auth-screen');  
+        if (!authScreen.classList.contains('hidden')) {  
+            return;  
+        }  
+
+        if (navigationHistory.length > 1) {  
+            navigationHistory.pop();   
+            const prevTabId = navigationHistory[navigationHistory.length - 1];   
+              
+            let targetBtn = null;  
+            document.querySelectorAll('.tab-btn').forEach(b => {  
+                if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(prevTabId)) {  
+                    targetBtn = b;  
+                }  
+            });  
+
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));  
+            document.getElementById(prevTabId).classList.add('active');  
+
+            document.querySelectorAll('.tab-btn').forEach(b => {  
+                b.className = 'tab-btn text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2';  
+            });  
+
+            if (targetBtn) {  
+                let colorClass = currentRole === 'teacher' ? 'bg-blue-600' : 'bg-purple-600';  
+                targetBtn.className = `tab-btn ${colorClass} text-white font-semibold px-3 py-2 rounded-xl transition text-xs flex items-center justify-center gap-2`;  
+            }  
+
+            history.pushState({ tabId: prevTabId }, "", "");  
+        } else {  
+            history.pushState({ tabId: navigationHistory[0] }, "", "");  
+        }  
+    });  
+
+    function renderExamsList() {  
+        const container = document.getElementById('exams-list-container');  
+        container.innerHTML = '';  
+          
+        createdExams.forEach((exam, idx) => {  
+            container.innerHTML += `  
+                <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-5 rounded-2xl flex justify-between items-center transition-colors">  
+                    <div>  
+                        <h3 class="font-bold text-sm">${exam.title}</h3>  
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">${exam.questions.length} أسئلة • تفاعلي</p>  
+                    </div>  
+                    <button onclick="startExam(${idx})" class="theme-btn bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">ابدأ الامتحان</button>  
+                </div>  
+            `;  
+        });  
+    }  
+
+    function startExam(examIndex) {  
+        currentActiveExam = createdExams[examIndex];  
+        currentQuestionIndex = 0;  
+        scoreCounter = 0;  
+
+        pushStateSection('exam-active-room', null, true);  
+        document.getElementById('active-exam-title').innerText = currentActiveExam.title;  
+        loadExamQuestion();  
+        startExamTimer(300);  
+    }  
+
+    function loadExamQuestion() {  
+        if (currentQuestionIndex >= currentActiveExam.questions.length) {  
+            finishActiveExam();  
+            return;  
+        }  
+
+        const q = currentActiveExam.questions[currentQuestionIndex];  
+        document.getElementById('active-exam-progress').innerText = `السؤال ${currentQuestionIndex + 1} من ${currentActiveExam.questions.length}`;  
+        document.getElementById('question-prompt').innerText = q.text;  
+
+        const optContainer = document.getElementById('options-container');  
+        optContainer.innerHTML = '';  
+
+        q.options.forEach((opt, idx) => {  
+            optContainer.innerHTML += `  
+                <label class="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-3.5 rounded-xl cursor-pointer hover:border-purple-500 transition">  
+                    <input type="radio" name="exam_option" value="${idx + 1}" class="w-4 h-4 text-purple-600 focus:ring-purple-500">  
+                    <span class="text-sm font-medium">${opt}</span>  
+                </label>  
+            `;  
+        });  
+
+        document.getElementById('next-question-btn').innerText = (currentQuestionIndex === currentActiveExam.questions.length - 1) ? 'إنهاء وتسليم الامتحان 🏁' : 'السؤال التالي ⬅';  
+    }  
+
+    function nextExamQuestion() {  
+        const selected = document.querySelector('input[name="exam_option"]:checked');  
+        if (!selected) {  
+            alert('الرجاء اختيار إجابة قبل الانتقال للسؤال التالي!');  
+            return;  
+        }  
+
+        const chosenAnswer = parseInt(selected.value);  
+        const correctOpt = currentActiveExam.questions[currentQuestionIndex].correct;  
+
+        if (chosenAnswer === correctOpt) {  
+            scoreCounter++;  
+        }  
+
+        currentQuestionIndex++;  
+        loadExamQuestion();  
+    }  
+
+    function startExamTimer(durationSeconds) {  
+        let timer = durationSeconds;  
+        clearInterval(timerInterval);  
+        timerInterval = setInterval(() => {  
+            let minutes = Math.floor(timer / 60);  
+            let seconds = timer % 60;  
+            document.getElementById('exam-timer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;  
+              
+            if (--timer < 0) {  
+                clearInterval(timerInterval);  
+                alert('انتهى الوقت المخصص للامتحان!');  
+                finishActiveExam();  
+            }  
+        }, 1000);  
+    }  
+
+    function cancelActiveExam() {  
+        clearInterval(timerInterval);  
+        if (confirm('هل أنت متأكد من إلغاء الامتحان؟ لن يتم حفظ النتيجة.')) {  
+            pushStateSection('exams', document.getElementById('tab-exams'), true);  
+        }  
+    }  
+
+    function finishActiveExam() {  
+        clearInterval(timerInterval);  
+        const totalQ = currentActiveExam.questions.length;  
+        const percentage = Math.round((scoreCounter / totalQ) * 100);  
+        
+        // شروط الألوان المخصصة التي طلبتها:
+        let gradeText = '';
+        if (percentage < 50) {
+            gradeText = 'يحتاج تحسين ⚠️';
+        } else if (percentage >= 50 && percentage <= 70) {
+            gradeText = 'مقبول متوسط 🟡';
+        } else {
+            gradeText = 'ممتاز ⭐';
+        }
+
+        const resultEntry = {  
+            examTitle: currentActiveExam.title,  
+            score: `${scoreCounter} / ${totalQ} (${percentage}% - ${gradeText})`,  
+            date: new Date().toISOString().split('T')[0],
+            percentage: percentage
+        };  
+
+        studentResults.unshift(resultEntry);  
+        saveAllData();  
+        renderResultsList();  
+
+        document.getElementById('custom-modal-msg').innerText = `درجتك: ${scoreCounter} من ${totalQ} (${percentage}%)`;  
+        document.getElementById('result-custom-modal').classList.remove('hidden');  
+    }  
+
+    function closeResultCustomModal() {  
+        document.getElementById('result-custom-modal').classList.add('hidden');  
+        pushStateSection('results', document.getElementById('tab-results'), true);  
+    }  
+
+    function renderResultsList() {  
+        const container = document.getElementById('results-list-container');  
+        container.innerHTML = '';  
+        studentResults.forEach(res => {  
+            // تحديد اللون ديناميكياً بناءً على النسبة المحفوظة
+            let colorClass = 'text-green-600 dark:text-green-400';
+            if (res.percentage < 50) {
+                colorClass = 'text-red-600 dark:text-red-400';
+            } else if (res.percentage >= 50 && res.percentage <= 70) {
+                colorClass = 'text-amber-500 dark:text-amber-400';
+            }
+
+            container.innerHTML += `  
+                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-3">  
+                    <div>  
+                        <span class="font-bold text-sm">${res.examTitle}</span>  
+                        <span class="block text-[10px] text-gray-400">${res.date}</span>  
+                    </div>  
+                    <span class="${colorClass} font-bold text-xs">${res.score}</span>  
+                </div>  
+            `;  
+        });  
+    }  
+
+    function addQuestionToExamList() {  
+        const qText = document.getElementById('question-text').value.trim();  
+        const o1 = document.getElementById('opt-1').value.trim();  
+        const o2 = document.getElementById('opt-2').value.trim();  
+        const o3 = document.getElementById('opt-3').value.trim();  
+        const o4 = document.getElementById('opt-4').value.trim();  
+        const correctIdx = parseInt(document.getElementById('correct-answer-index').value);  
+
+        if (!qText || !o1 || !o2 || isNaN(correctIdx)) {  
+            alert('الرجاء إدخال نص السؤال وخيارين على الأقل مع تحديد رقم الخيار الصحيح (1 أو 2 أو...)!');  
+            return;  
+        }  
+
+        tempQuestions.push({   
+            text: qText,   
+            options: [o1, o2, o3, o4].filter(Boolean),   
+            correct: correctIdx   
+        });  
+
+        document.getElementById('q-count-indicator').innerText = tempQuestions.length;  
+          
+        document.getElementById('question-text').value = '';  
+        document.getElementById('opt-1').value = '';  
+        document.getElementById('opt-2').value = '';  
+        document.getElementById('opt-3').value = '';  
+        document.getElementById('opt-4').value = '';  
+        document.getElementById('correct-answer-index').value = '';  
+
+        alert('تمت إضافة السؤال بنجاح إلى الامتحان الحالية! يمكنك إضافة سؤال آخر.');  
+    }  
+
+    function publishExamToStudents() {  
+        const title = document.getElementById('exam-main-title').value.trim();  
+        if (!title) {  
+            alert('الرجاء كتابة عنوان الامتحان الرئيسي أولاً!');  
+            return;  
+        }  
+        if (tempQuestions.length === 0) {  
+            alert('يجب إضافة سؤال واحد على الأقل قبل نشر الامتحان!');  
+            return;  
+        }  
+
+        createdExams.push({ id: Date.now(), title, questions: [...tempQuestions] });  
+        saveAllData();  
+
+        tempQuestions = [];  
+        document.getElementById('q-count-indicator').innerText = '0';  
+        document.getElementById('exam-main-title').value = '';  
+
+        document.getElementById('teacher-exam-count-box').innerText = `${createdExams.length} امتحانات`;  
+        document.getElementById('student-exams-count').innerText = createdExams.length;  
+
+        renderExamsList();  
+
+        alert('🚀 تم نشر الامتحان بنجاح وأصبح متاحاً للطلاب فوراً في لوحة تحكمهم!');  
+        pushStateSection('teacher-dash', document.getElementById('tab-teacher-home'), true);  
+    }  
+
+    function uploadPlatformFile(event) {  
+        const file = event.target.files[0];  
+        if (file) {  
+            const reader = new FileReader();  
+            reader.onload = function(e) {  
+                platformFiles.push({  
+                    name: file.name,  
+                    type: file.type.includes('image') ? 'صورة' : 'ملف',  
+                    size: (file.size / (1024*1024)).toFixed(1) + ' MB',  
+                    author: currentUser,  
+                    data: e.target.result  
+                });  
+                saveAllData();  
+                renderPlatformFiles();  
+                alert(`تم رفع الملف "${file.name}" بنجاح وصار متاحاً للجميع على المنصة! 📁`);  
+            };  
+            reader.readAsDataURL(file);  
+        }  
+    }  
+
+    function renderPlatformFiles() {  
+        const container = document.getElementById('platform-files-container');  
+        container.innerHTML = '';  
+        platformFiles.forEach(f => {  
+            container.innerHTML += `  
+                <div class="border border-gray-200 dark:border-gray-800 p-4 rounded-xl flex items-center justify-between bg-gray-50 dark:bg-gray-900">  
+                    <div class="flex items-center gap-3">  
+                        <span class="text-2xl">${f.type === 'صورة' ? '🖼️' : '📄'}</span>  
+                        <div>  
+                            <h4 class="font-bold text-xs truncate max-w-[120px]">${f.name}</h4>  
+                            <span class="text-[10px] text-gray-400">بواسطة ${f.author} • ${f.size}</span>  
+                        </div>  
+                    </div>  
+                    <a href="${f.data}" download="${f.name}" class="text-xs text-emerald-600 hover:underline font-bold">تحميل</a>  
+                </div>  
+            `;  
+        });  
+    }  
+
+    function promptLogout() {  
+        document.getElementById('logout-confirm-modal').classList.remove('hidden');  
+    }  
+
+    function closeLogoutModal() {  
+        document.getElementById('logout-confirm-modal').classList.add('hidden');  
+    }  
+
+    function confirmLogout() {  
+        closeLogoutModal();  
+        document.getElementById('platform-container').classList.add('hidden');  
+        document.getElementById('auth-screen').classList.remove('hidden');  
+        document.body.classList.add('flex', 'items-center', 'justify-center');  
+        document.getElementById('username').value = '';  
+        document.getElementById('password').value = '';  
+        document.getElementById('confirm-password').value = '';  
+        document.getElementById('dropdown-menu').classList.remove('open');  
+        document.getElementById('menu-arrow').style.transform = 'rotate(0deg)';  
+        navigationHistory = [];  
+        if(isRegisterMode) toggleAuthMode();  
+    }  
+
+    function setAvatarImg(emoji) {  
+        const profileBox = document.getElementById('profile-avatar-box');  
+        const headerBox = document.getElementById('header-avatar-container');  
+        profileBox.innerHTML = `<span class="text-3xl">${emoji}</span>`;  
+        headerBox.innerHTML = `<span class="text-sm">${emoji}</span>`;  
+    }  
+
+    function uploadCustomAvatar(event) {  
+        const file = event.target.files[0];  
+        if (file) {  
+            const reader = new FileReader();  
+            reader.onload = function(e) {  
+                const imgHtml = `<img src="${e.target.result}" class="w-full h-full object-cover">`;  
+                document.getElementById('profile-avatar-box').innerHTML = imgHtml;  
+                document.getElementById('header-avatar-container').innerHTML = imgHtml;  
+            };  
+            reader.readAsDataURL(file);  
+        }  
+    }  
+
+    function saveProfileChanges() {  
+        const newName = document.getElementById('edit-username').value.trim();  
+        const newBio = document.getElementById('edit-bio').value.trim();  
+
+        if (!newName) {  
+            alert('اسم المستخدم لا يمكن أن يكون فارغاً!');  
+            return;  
+        }  
+
+        currentUser = newName;  
+        document.getElementById('profile-username-display').innerText = newName;  
+        document.getElementById('user-welcome-header').innerText = `أهلاً بك يا ${newName}`;  
+          
+        if (newBio) {  
+            document.getElementById('profile-bio-display').innerText = newBio;  
+        }  
+
+        alert('تم حفظ التعديلات بنجاح! ✅');  
+    }  
+
+    function toggleDarkMode() {  
+        const htmlElement = document.documentElement;  
+        const btn = document.getElementById('dark-mode-btn');  
+
+        if (htmlElement.classList.contains('dark')) {  
+            htmlElement.classList.remove('dark');  
+            btn.innerText = '🌙 الوضع المظلم';  
+        } else {  
+            htmlElement.classList.add('dark');  
+            btn.innerText = '☀️ الوضع الفاتح';  
+        }  
+    }  
+
+    function setThemeColor(color) {  
+        let colorClass = color === 'blue' ? 'bg-blue-600' : color === 'emerald' ? 'bg-emerald-600' : 'bg-purple-600';  
+        if (currentRole === 'teacher') colorClass = 'bg-blue-600';  
+          
+        let hoverClass = color === 'blue' ? 'hover:bg-blue-700' : color === 'emerald' ? 'hover:bg-emerald-700' : 'hover:bg-purple-700';  
+        let textClass = color === 'blue' ? 'text-blue-600 dark:text-blue-400' : color === 'emerald' ? 'text-emerald-600 dark:text-emerald-400' : 'text-purple-600 dark:text-purple-400';  
+          
+        document.querySelectorAll('.theme-btn').forEach(btn => {  
+            btn.className = btn.className.replace(/bg-(purple|blue|emerald)-600/g, '').replace(/hover:bg-(purple|blue|emerald)-700/g, '');  
+            btn.classList.add(colorClass, hoverClass);  
+        });  
+
+        document.querySelectorAll('.theme-accent-txt').forEach(el => {  
+            el.className = el.className.replace(/text-(purple|blue|emerald)-(600|400)/g, textClass);  
+        });  
+    }  
+
+    function changeLanguage(lang) {  
+        const html = document.documentElement;  
+        if (lang === 'en') {  
+            html.setAttribute('dir', 'ltr');  
+            html.setAttribute('lang', 'en');  
+        } else {  
+            html.setAttribute('dir', 'rtl');  
+            html.setAttribute('lang', 'ar');  
+        }  
+    }  
+</script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyCMEeSggdGN3jzhElpABf7mCuHzOZbxqqc",
+    authDomain: "nova-future-b026e.firebaseapp.com",
+    projectId: "nova-future-b026e",
+    storageBucket: "nova-future-b026e.firebasestorage.app",
+    messagingSenderId: "510873824571",
+    appId: "1:510873824571:web:21a8d60d911ff3b6d2db1e",
+    measurementId: "G-SYM7ZH5KBZ"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+</body>  
+</html>
