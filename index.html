@@ -178,7 +178,7 @@
                         <p class="text-xs text-gray-500 mt-1" id="active-exam-progress">السؤال 1 من 3</p>  
                     </div>  
                     <div class="bg-purple-100 dark:bg-purple-950/60 border border-purple-300 dark:border-purple-500/30 px-4 py-2 rounded-xl text-xs font-bold text-purple-700 dark:text-purple-300">  
-                        ⏱️ متبقي: <span id="exam-timer">05:00</span>  
+                        ⏱️ متبقي: <span id="exam-timer">15:00</span>  
                     </div>  
                 </div>  
 
@@ -232,7 +232,7 @@
             <div class="theme-banner bg-gradient-to-r from-blue-100 dark:from-blue-900/40 via-indigo-50 dark:via-indigo-900/30 to-white dark:to-[#111827] border border-blue-200 dark:border-blue-500/30 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 transition-colors">  
                 <div class="space-y-2">  
                     <h2 class="text-xl md:text-2xl font-bold">لوحة تحكم المعلمة 👩‍🏫</h2>  
-                    <p class="text-gray-600 dark:text-gray-400 text-sm">أهلاً بكِ أستاذة! يمكنكِ هنا إنشاء الامتحانات، إضافة الأسئلة وإدارتها، ومتابعة الطلاب.</p>  
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">أهلاً بكِ أستاذة! يمكنكِ هنا إنشاء الامتحانات وتحديد وقتها، إضافة الأسئلة وإدارتها، ومتابعة الطلاب.</p>  
                 </div>  
                 <button onclick="switchTab('teacher-create-exam', document.getElementById('tab-teacher-create'))" class="theme-btn bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-blue-600/30">+ إنشاء امتحان جديد</button>  
             </div>  
@@ -256,9 +256,15 @@
         <section id="teacher-create-exam" class="view-section space-y-6 teacher-view">  
             <h2 class="text-xl font-bold">📝 إنشاء وتعديل الاختبارات وإضافة الأسئلة</h2>  
             <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-6 rounded-2xl space-y-5 transition-colors">  
-                <div>  
-                    <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">عنوان الامتحان الرئيسي</label>  
-                    <input type="text" id="exam-main-title" placeholder="مثال: امتحان الفيزياء - الفصل الأول" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-600">  
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">  
+                    <div>  
+                        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">عنوان الامتحان الرئيسي</label>  
+                        <input type="text" id="exam-main-title" placeholder="مثال: امتحان الفيزياء - الفصل الأول" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-600">  
+                    </div>  
+                    <div>  
+                        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">وقت الامتحان (بالدقائق)</label>  
+                        <input type="number" id="exam-duration-input" min="1" value="15" placeholder="مثال: 15" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-800 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-600">  
+                    </div>  
                 </div>  
 
                 <div class="border-t border-gray-200 dark:border-gray-800 pt-4 space-y-4">  
@@ -477,6 +483,7 @@
         {  
             id: 1,  
             title: "امتحان التاريخ العام (الفصل الأول)",  
+            duration: 15, // بالدقائق
             questions: [  
                 { text: "في أي عام قامت ثورة 1919 في مصر؟", options: ["1917", "1919", "1922", "1924"], correct: 2 },  
                 { text: "من هو قائد ثورة 1919؟", options: ["مصطفى كامل", "سعد زغلول", "محمد فريد", "أحمد عرابي"], correct: 2 }  
@@ -749,11 +756,12 @@
         container.innerHTML = '';  
           
         createdExams.forEach((exam, idx) => {  
+            const durationMins = exam.duration || 15;  
             container.innerHTML += `  
                 <div class="bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-5 rounded-2xl flex justify-between items-center transition-colors">  
                     <div>  
                         <h3 class="font-bold text-sm">${exam.title}</h3>  
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">${exam.questions.length} أسئلة • تفاعلي</p>  
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">${exam.questions.length} أسئلة • المدة: ${durationMins} دقائق ⏱️</p>  
                     </div>  
                     <button onclick="startExam(${idx})" class="theme-btn bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition">ابدأ الامتحان</button>  
                 </div>  
@@ -770,8 +778,9 @@
         document.getElementById('active-exam-title').innerText = currentActiveExam.title;  
         loadExamQuestion();  
           
-        // تشغيل مؤقت الامتحان لمدة 15 دقيقة (يمكنك تغييرها كما تحب)
-        startExamTimer(15, function() {  
+        // تشغيل مؤقت الامتحان بالمدة التي حددها المعلم (أو 15 دقيقة افتراضياً)
+        const examDuration = currentActiveExam.duration ? currentActiveExam.duration : 15;  
+        startExamTimer(examDuration, function() {  
             finishActiveExam();  
         });  
     }  
@@ -819,7 +828,7 @@
         loadExamQuestion();  
     }  
 
-    // دالة مؤقت الامتحان المحدثة
+    // دالة التايمر التفاعلي وتسليم الامتحان عند انتهائه
     function startExamTimer(durationInMinutes, onTimeUp) {  
         let timer = durationInMinutes * 60;  
         clearInterval(timerInterval);  
@@ -838,7 +847,7 @@
 
             if (--timer < 0) {  
                 clearInterval(timerInterval);  
-                alert("انتهى وقت الامتحان!");  
+                alert("انتهى وقت الامتحان! سيتم تسليم الإجابات تلقائياً.");  
                 if (typeof onTimeUp === "function") {  
                     onTimeUp();  
                 }  
@@ -878,14 +887,13 @@
         saveAllData();  
         renderResultsList();  
 
-        // حفظ النتيجة أونلاين في قاعدة بيانات فايربيس تلقائياً
+        // حفظ النتيجة في قاعدة بيانات فايربيس تلقائياً
         saveExamResult(currentUser, scoreCounter, totalQ);  
 
         document.getElementById('custom-modal-msg').innerText = `درجتك: ${scoreCounter} من ${totalQ} (${percentage}%)`;  
         document.getElementById('result-custom-modal').classList.remove('hidden');  
     }  
 
-    // دالة حفظ النتيجة في فايربيس (Firestore)
     async function saveExamResult(studentName, score, totalQuestions) {  
       try {  
         if (!window.db) {  
@@ -964,11 +972,13 @@
         document.getElementById('opt-4').value = '';  
         document.getElementById('correct-answer-index').value = '';  
 
-        alert('تمت إضافة السؤال بنجاح إلى الامتحان الحالية! يمكنك إضافة سؤال آخر.');  
+        alert('تمت إضافة السؤال بنجاح إلى الامتحان الحالي! يمكنك إضافة سؤال آخر.');  
     }  
 
     function publishExamToStudents() {  
         const title = document.getElementById('exam-main-title').value.trim();  
+        const durationVal = parseInt(document.getElementById('exam-duration-input').value) || 15;  
+
         if (!title) {  
             alert('الرجاء كتابة عنوان الامتحان الرئيسي أولاً!');  
             return;  
@@ -978,19 +988,25 @@
             return;  
         }  
 
-        createdExams.push({ id: Date.now(), title, questions: [...tempQuestions] });  
+        createdExams.push({   
+            id: Date.now(),   
+            title,   
+            duration: durationVal,   
+            questions: [...tempQuestions]   
+        });  
         saveAllData();  
 
         tempQuestions = [];  
         document.getElementById('q-count-indicator').innerText = '0';  
         document.getElementById('exam-main-title').value = '';  
+        document.getElementById('exam-duration-input').value = '15';  
 
         document.getElementById('teacher-exam-count-box').innerText = `${createdExams.length} امتحانات`;  
         document.getElementById('student-exams-count').innerText = createdExams.length;  
 
         renderExamsList();  
 
-        alert('🚀 تم نشر الامتحان بنجاح وأصبح متاحاً للطلاب فوراً في لوحة تحكمهم!');  
+        alert('🚀 تم نشر الامتحان بنجاح بالوقت المحدد وأصبح متاحاً للطلاب فوراً في لوحة تحكمهم!');  
         pushStateSection('teacher-dash', document.getElementById('tab-teacher-home'), true);  
     }  
 
@@ -1138,7 +1154,6 @@
 </script>  
 
 <script type="module">
-  // استيراد حزم فايربيس (التحليلات وقاعدة البيانات Firestore)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
   import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
@@ -1153,12 +1168,10 @@
     measurementId: "G-SYM7ZH5KBZ"
   };
 
-  // تهيئة التطبيق والتحليلات وقاعدة البيانات
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
   const db = getFirestore(app);
 
-  // حفظ الدوال في نافذة المتصفح عشان نستخدمها وقت حفظ الامتحان
   window.db = db;
   window.firestoreMethods = { collection, addDoc, getDocs };
   
