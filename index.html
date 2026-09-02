@@ -1191,7 +1191,7 @@
     }  
 
 
-    async function saveProfileChanges() {  
+        async function saveProfileChanges() {  
         const newName = document.getElementById('edit-username').value.trim();  
         const newBio = document.getElementById('edit-bio').value.trim();  
 
@@ -1202,10 +1202,12 @@
 
         try {  
             if (window.db) {  
-                const userDocRef = window.firestoreMethods.doc(window.db, "users", newName);  
+                // التعديل هنا: استخدام currentUser بدل newName عشان نحفظ البيانات صح
+                const userDocRef = window.firestoreMethods.doc(window.db, "users", currentUser);  
                 await window.firestoreMethods.setDoc(userDocRef, {  
                     username: newName,  
-                    bio: newBio  
+                    bio: newBio,
+                    updatedAt: new Date().toISOString()
                 }, { merge: true });  
             }  
         } catch(e) {  
@@ -1222,6 +1224,7 @@
 
         alert('تم حفظ التعديلات السحابية بنجاح! ✅');  
     }  
+
 
     function toggleDarkMode() {  
         const htmlElement = document.documentElement;  
