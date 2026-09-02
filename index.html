@@ -767,6 +767,8 @@
         renderResultsList();  
         renderPlatformFiles();  
         loadUserDataFromCloud(user);  
+        updatePlatformRealStats();
+        
 
         navigationHistory = [];  
         if (currentRole === 'teacher') {  
@@ -1358,6 +1360,71 @@
 
         // حفظ لغة المستخدم في الـ localStorage عشان تفضل محفوظة
         localStorage.setItem('nova_lang', lang);
+    }
+    async function updatePlatformRealStats() {
+        try {
+            if (!window.db || !window.firestoreMethods) return;
+
+            const { collection, getDocs } = window.firestoreMethods;
+
+            // 1. جلب حسابات المستخدمين لحساب عدد الطلاب الحقيقيين
+            const usersSnapshot = await getDocs(collection(window.db, "users"));
+            let totalStudentsCount = 0;
+            
+            usersSnapshot.forEach((doc) => {
+                const userData = doc.data();
+                if (!userData.role || userData.role === 'student') {
+                    totalStudentsCount++;
+                }
+            });
+
+            // 2. جلب نتائج الامتحانات لحساب متوسط الأداء والنسب
+            const resultsSnapshot = await getDocs(collection(window.db, "examResults"));
+            let totalExamsTaken = 0;
+            let totalPercentagesSum = 0;
+            let topScoreVal = "0/0";
+            let maxPercentage = -1;
+
+            resultsSnapshot.forEach((doc) => {
+                const resData = doc.data();
+                if (resData.percentage !== undefined) {
+                    totalExamsTaken++;
+                    totalPercentagesSum += Number(resData.percentage);
+
+                    if (resData.percentage > maxPercentage) {
+                        maxPercentage = resData.percentage;
+                        topScoreVal = `${resData.score} / ${resData.total}`;
+                    }
+                }
+            });
+
+            const averagePercentage = totalExamsTaken > 0 ? Math.round(totalPercentagesSum / totalExamsTaken) : 0;
+
+            // 3. تحديث واجهة الطالب
+            const studentExamsCountEl = document.getElementById('student-exams-count');
+            if (studentExamsCountEl) studentExamsCountEl.innerText = totalExamsTaken;
+
+            const studentSuccessRateEl = document.getElementById('student-success-rate');
+            if (studentSuccessRateEl) studentSuccessRateEl.innerText = `${averagePercentage}%`;
+
+            const studentTopScoreEl = document.getElementById('student-top-score');
+            if (studentTopScoreEl) studentTopScoreEl.innerText = topScoreVal;
+
+            // 4. تحديث واجهة المعلم
+            const teacherStudentsBox = document.querySelector('#teacher-dash .grid div:nth-child(1) h3');
+            if (teacherStudentsBox) teacherStudentsBox.innerText = `${totalStudentsCount} طالب/ة`;
+
+            const teacherExamCountBox = document.getElementById('teacher-exam-count-box');
+            if (teacherExamCountBox) teacherExamCountBox.innerText = `${totalExamsTaken} امتحان`;
+
+            const teacherAvgBox = document.querySelector('#teacher-dash .grid div:nth-child(3) h3');
+            if (teacherAvgBox) teacherAvgBox.innerText = `${averagePercentage}%`;
+
+            console.log("تم تحديث جميع إحصائيات المنصة الحقيقية من السحابة بنجاح 📊");
+
+        } catch (e) {
+            console.error("خطأ أثناء جلب الإحصائيات الحقيقية: ", e);
+        }
     }
 
 </script>  
