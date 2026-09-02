@@ -1256,16 +1256,44 @@
         });  
     }  
 
+          // قاموس الترجمات للنصوص الأساسية في المنصة
+    const siteTranslations = {
+        ar: {
+            "auth-main-title": "Nova Future",
+            "auth-subtitle": "منصة نوفيوتشر التعليمية",
+            "login-tab-text": "تسجيل الدخول",
+            "register-tab-text": "إنشاء حساب جديد",
+            "btn-submit-auth": "دخول",
+        },
+        en: {
+            "auth-main-title": "Nova Future",
+            "auth-subtitle": "Nova Future Educational Platform",
+            "login-tab-text": "Login",
+            "register-tab-text": "Register",
+            "btn-submit-auth": "Sign In",
+        }
+    };
+
     function changeLanguage(lang) {  
         const html = document.documentElement;  
-        if (lang === 'en') {  
-            html.setAttribute('dir', 'ltr');  
-            html.setAttribute('lang', 'en');  
-        } else {  
-            html.setAttribute('dir', 'rtl');  
-            html.setAttribute('lang', 'ar');  
-        }  
-    }  
+        html.setAttribute('dir', lang === 'en' ? 'ltr' : 'rtl');  
+        html.setAttribute('lang', lang);  
+
+        // تطبيق الترجمة على العناصر اللي ليها ترجمة متاحة
+        const translations = siteTranslations[lang];
+        if (translations) {
+            for (const [id, text] of Object.entries(translations)) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.innerText = text;
+                }
+            }
+        }
+
+        // حفظ لغة المستخدم في الـ localStorage عشان تفضل محفوظة
+        localStorage.setItem('nova_lang', lang);
+    }
+
 </script>  
 
 </body>  
