@@ -737,12 +737,13 @@
                 proceedLoginSuccess(user, currentRole);  
             }, 800);  
 
-                } catch (error) {
+                        } catch (error) {
             console.error("خطأ في المصادقة السحابية:", error);
-            msg.innerText = 'خطأ فايرباس: ' + error.message;
+            msg.innerText = 'EXC: ' + (error.message || JSON.stringify(error));
             msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';
             msg.classList.remove('hidden');
         }
+
 
 
     function proceedLoginSuccess(user, role) {  
