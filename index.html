@@ -647,7 +647,7 @@
         }  
     }  
 
-    function handleAuth() {  
+          async function handleAuth() {  
         const user = document.getElementById('username').value.trim();  
         const pass = document.getElementById('password').value.trim();  
         const confirmPass = document.getElementById('confirm-password').value.trim();  
@@ -662,51 +662,89 @@
             return;  
         }  
 
-        if (isRegisterMode) {  
-            if (pass !== confirmPass) {  
-                msg.innerText = 'كلمتا المرور غير متطابقتين!';  
-                msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
+        try {
+            // التحقق من وجود قاعدة البيانات السحابية
+            if (!window.db || !window.firestoreMethods) {
+                alert('قاعدة البيانات السحابية غير متصلة!');
+                return;
+            }
+
+            const { doc, getDoc, setDoc } = window.firestoreMethods;
+            const userDocRef = doc(window.db, "users", user);
+            const userSnap = await getDoc(userDocRef);
+
+            if (isRegisterMode) {  
+                if (pass !== confirmPass) {  
+                    msg.innerText = 'كلمتا المرور غير متطابقتين!';  
+                    msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
+                    msg.classList.remove('hidden');  
+                    return;  
+                }  
+
+                // التحقق إذا كان المستخدم موجود مسبقاً في السحابة
+                if (userSnap.exists()) {  
+                    msg.innerText = 'اسم المستخدم موجود بالفعل!';  
+                    msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
+                    msg.classList.remove('hidden');  
+                    return;  
+                }  
+
+                // حفظ المستخدم الجديد في Firebase Firestore
+                await setDoc(userDocRef, {  
+                    username: user,
+                    password: pass, // ملاحظة: يفضل تشفيرها لاحقاً لزيادة الأمان
+                    role: selectedRole,
+                    createdAt: new Date().toISOString()
+                });  
+
+                currentRole = selectedRole;  
+                msg.innerText = 'تم إنشاء الحساب بنجاح سحابياً! جاري الدخول...';  
+                msg.className = 'text-xs text-center text-green-500 dark:text-green-400 mt-2';  
                 msg.classList.remove('hidden');  
-                return;  
-            }  
-            if (registeredUsers[user]) {  
-                msg.innerText = 'اسم المستخدم موجود بالفعل!';  
-                msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
-                msg.classList.remove('hidden');  
-                return;  
-            }  
-            registeredUsers[user] = { pass, role: selectedRole };  
-            saveAllData();  
-            currentRole = selectedRole;  
-            msg.innerText = 'تم إنشاء الحساب بنجاح! جاري الدخول...';  
-            msg.className = 'text-xs text-center text-green-500 dark:text-green-400 mt-2';  
-            msg.classList.remove('hidden');  
-        } else {  
-            if (!registeredUsers[user]) {  
-                registeredUsers[user] = { pass, role: selectedRole };  
-                saveAllData();  
+
+            } else {  
+                // وضع تسجيل الدخول
+                if (!userSnap.exists()) {  
+                    msg.innerText = 'اسم المستخدم غير مسجل، يرجى إنشاء حساب جديد!';  
+                    msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
+                    msg.classList.remove('hidden');  
+                    return;  
+                }  
+
+                const userData = userSnap.data();
+
+                if (userData.password !== pass) {  
+                    msg.innerText = 'كلمة المرور غير صحيحة!';  
+                    msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
+                    msg.classList.remove('hidden');  
+                    return;  
+                }  
+
+                currentRole = userData.role || selectedRole;  
+                if (currentRole !== selectedRole) {  
+                    msg.innerText = `عذراً! هذا الحساب مسجل كـ (${currentRole === 'teacher' ? 'معلم' : 'طالب'})، يرجى اختيار النوع الصحيح من القائمة.`;  
+                    msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
+                    msg.classList.remove('hidden');  
+                    return;  
+                }  
+                
+                msg.innerText = 'تم تسجيل الدخول بنجاح! جاري التوجيه...';
+                msg.className = 'text-xs text-center text-green-500 dark:text-green-400 mt-2';
+                msg.classList.remove('hidden');
             }  
 
-            if (registeredUsers[user].pass !== pass) {  
-                msg.innerText = 'كلمة المرور غير صحيحة!';  
-                msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
-                msg.classList.remove('hidden');  
-                return;  
-            }  
+            setTimeout(() => {  
+                proceedLoginSuccess(user, currentRole);  
+            }, 800);  
 
-            currentRole = registeredUsers[user].role;  
-            if (currentRole !== selectedRole) {  
-                msg.innerText = `عذراً! هذا الحساب مسجل كـ (${currentRole === 'teacher' ? 'معلم' : 'طالب'})، يرجى اختيار النوع الصحيح من القائمة.`;  
-                msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';  
-                msg.classList.remove('hidden');  
-                return;  
-            }  
-        }  
-
-        setTimeout(() => {  
-            proceedLoginSuccess(user, currentRole);  
-        }, isRegisterMode ? 800 : 200);  
+        } catch (error) {
+            console.error("خطأ في المصادقة السحابية:", error);
+            msg.innerText = 'حدث خطأ أثناء الاتصال بالسحابة، يرجى المحاولة لاحقاً.';
+            msg.className = 'text-xs text-center text-red-500 dark:text-red-400 mt-2';
+            msg.classList.remove('hidden');
+        }
     }  
+
 
     function proceedLoginSuccess(user, role) {  
         currentUser = user;  
